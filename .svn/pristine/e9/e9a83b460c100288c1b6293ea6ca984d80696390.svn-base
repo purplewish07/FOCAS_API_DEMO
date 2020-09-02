@@ -1,0 +1,94 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace FANUC
+{
+    public partial class menu : Form
+    {
+        public menu()
+        {
+            InitializeComponent();
+        }
+
+        private void menu_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            int ret = Fanuc.cnc_freelibhndl(Fanuc.h);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            handle handle = new handle();
+            handle.Show();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            ncpro ncpro = new ncpro();
+            ncpro.Show();
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            historydata historydata = new historydata();
+            historydata.Show();
+        }
+
+        private void menu_Load(object sender, EventArgs e)
+        {
+
+        }
+
+   
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            control_axis con_axis = new control_axis();
+            con_axis.Show();
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            //related re = new related();
+            //re.Show();
+            related_axis relate = new related_axis();
+            relate.Show();
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+         
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            pmc pmc = new pmc();
+            pmc.Show();
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            alarm alarm = new alarm();
+            alarm.Show();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            tool_life_manage tool_life = new tool_life_manage();
+            tool_life.Show();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            para papagroph = new para();
+            papagroph.Show(); 
+
+        }
+  }
+}

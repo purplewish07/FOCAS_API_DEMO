@@ -1,0 +1,96 @@
+1，待机时间（指没有手动、自动操作）：
+cnc_statinfo(unsigned short FlibHndl, ODBST *statinfo);读取机器状态；
+typedef struct odbst {
+     short  dummy[2];  /* Not used                           */
+     short  aut;       /* AUTOMATIC mode selection           */
+     short  manual;    /* MANUAL mode selection              */
+     short  run;       /* Status of automatic operation      */
+     short  edit;      /* Status of program editing          */
+     short  motion;    /* Status of axis movement,dwell      */
+     short  mstb;      /* Status of M,S,T,B function         */
+     short  emergency; /* Status of emergency                */
+     short  write;     /* Status of writing backupped memory */
+     short  labelskip; /* Status of label skip               */
+     short  alarm;     /* Status of alarm                    */
+     short  warning;   /* Status of warning                  */
+     short  battery;   /* Status of battery                  */
+} ODBST ;
+run中有待机状态
+
+
+cnc_gettimer(unsigned short FlibHndl, IODBTIMER *buf);读取机器的日期
+
+cnc_rdtimer(unsigned short FlibHndl, short type, IODBTIME *time)//读取时间，30i好像没有这个函数
+type取值：0：通电时间；1：工作时间 2：切割时间 3 周期 4 待机时间
+
+
+
+2，运行时间：
+cnc_statinfo
+
+3，故障时间：
+cnc_statinfo(unsigned short FlibHndl, ODBST *statinfo);
+alarm字段为1，用cnc_gettimer记下时间记作t1；
+alarm字段为0，用cnc_gettimer记下时间记作t2；
+故障时间；t2-t1;
+
+4，停机状态：
+cnc_statinfo
+
+5，开机信号：没有价值，直接可以读出开机全部时间
+
+以上数据可以推算：人力绩效、工作时间、耗电量、损耗等等。
+
+6，刀具加工能力：
+
+7，刀具配置：
+
+8，刀具损耗：
+
+9，刀具分组：
+
+cnc_wrgrpinfo 设置刀具
+  int all = Fanuc.cnc_rdngrp(Fanuc.h, tool1);//刀片组的全部数量
+            short b = Convert.ToInt16(group_numer);
+            Fanuc.cnc_rdntool(Fanuc.h, b, tool2);//刀具的数量
+            Fanuc.cnc_rdlife(Fanuc.h, b, tool2);//刀具寿命
+            Fanuc.cnc_rdcount(Fanuc.h, b, tool2);//刀具计时器
+            Fanuc.cnc_rdtoolgrp(Fanuc.h, 2, 20 + 20 * 1, btg);//根据刀组号读出所有信息，很重要；
+            Fanuc.cnc_rdtlusegrp(Fanuc.h, grp);//读出正在使用的到组号；
+
+
+以上数据可以推算：设备保养等等。
+
+10，读报警信息：
+cnc_rdalmmsg2()
+
+11，上电信号：无法获取信号，只能读它通电时间
+
+12，操作信息：
+Fanuc.cnc_rdopmsg(Fanuc.h, 0, 6 + 256, opmsg)
+
+13，历史数据：
+
+14，cnc时间读取：
+cnc_gettimer
+
+15，读取诊断数据：
+cnc_diagnoss(Fanuc.h, numer, axes, 4 + 4 * 1, odbd_2);
+
+16，电机温度：
+cnc_diagnoss(Fanuc.h, numer, axes, 4 + 4 * 1, odbd_2);
+
+17，主轴电流百分比（电流大，可预轴承断裂）：
+已获取
+
+18，程序结束信号：
+cnc_rdprstrinfo程序启动
+
+19，最大速度
+cnc_rdspcss可能，目前没找到此类函数
+
+20，归0；
+cnc_wrrelpos 相对axis轴归0
+cnc_prstwkcd 绝对位置重置
+
+21，读梯图：

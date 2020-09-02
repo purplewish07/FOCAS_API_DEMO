@@ -1,0 +1,158 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace FANUC
+{
+    public partial class related_axis : Form
+    {
+        public related_axis()
+        {
+            InitializeComponent();
+        }
+        Fanuc.ODBSYS sys = new Focas1.ODBSYS();
+
+        public void get_loop_gain()//伺服调整环路增益,ok
+        {
+            //out 只是表示传递此变量的地址
+           
+                int[] array = new int[] { 1, 2, 3 };
+
+
+
+
+                short ret = Fanuc.cnc_rdloopgain(Fanuc.h, out array[0]);
+                if (ret == 0)
+                {
+                    for (int i = 0; i < array.Length; i++)
+                        listBox9.Items.Add("环路增益：" + array[i]);
+                }
+                else
+                {
+                    MessageBox.Show(ret+"");
+                }
+            
+
+        }
+        public void get_moshi() //读取主轴设置的操作模式,ok
+        {
+            short[] array = new short[] { 1, 2, 3 };
+
+            short ret = Fanuc.cnc_rdopmode(Fanuc.h, out array[0]);
+            if (ret == 0)
+            {
+                for (int i = 0; i < array.Length; i++)
+                    listBox9.Items.Add("操作模式" + array[i]);
+            }
+            else
+            {
+                MessageBox.Show(ret+"");
+            }
+
+        }
+        public void get_current()//读取伺服调整的电流,ok
+        {
+            //可以先读取最大轴数号
+            Fanuc.cnc_sysinfo(Fanuc.h, sys);
+            int n = Convert.ToInt32(sys.axes.Length);
+            short[] array = new short[n];
+            short ret = Fanuc.cnc_rdcurrent(Fanuc.h, out array[0]);
+            if (ret == 0)
+            {
+                for (int i = 0; i < array.Length; i++)
+                    listBox9.Items.Add("电流" + array[i]);
+            }
+            else
+            {
+                MessageBox.Show(ret+"");
+            }
+        }
+        public void get_ad_speed()//读取伺服调整的速度,ok
+        {
+            Fanuc.cnc_sysinfo(Fanuc.h, sys);
+            int n = Convert.ToInt32(sys.axes.Length);
+            int[] a = new int[n];
+            short ret = Fanuc.cnc_rdsrvspeed(Fanuc.h, out a[0]);
+            if (ret == 0)
+            {
+                for (int i = 0; i < a.Length; i++)
+                    listBox9.Items.Add("速度" + a[i]);
+            }
+            else
+            {
+                MessageBox.Show(ret+"");
+            }
+        }
+        public void get_spindle_amount()//读取主轴数量,ok
+        {
+            short array;
+            short ret = Fanuc.cnc_rdcurrent(Fanuc.h, out array);
+            if (ret == 0)
+            {
+                listBox9.Items.Add("轴数" + array);
+            }
+            else
+            {
+                MessageBox.Show(ret+"");
+            }
+
+        }
+        Fanuc.ODBSPDI spdi = new Focas1.ODBSPDI();
+        Fanuc.ODBSPDO pdo = new Focas1.ODBSPDO();
+        public void monitor_info()//所监控的控制信号
+        {
+            string m = "123";
+
+            //  short ret = Fanuc.cnc_rdspdlalm(flibhndl, m);//警报
+            short ret2 = Fanuc.cnc_rdctrldi(Fanuc.h, spdi);//控制输入信号?
+
+            short ret3 = Fanuc.cnc_rdctrldo(Fanuc.h, pdo);//控制输出信号
+            if (ret2 == 0 && ret3 == 0)
+            {
+                listBox9.Items.Add("控制输出信号:" + Convert.ToInt16(pdo.do1.sgnl1) + ":" + pdo.do1.sgnl2 + "；" + pdo.do1.sgnl3 + ";" + pdo.do1.sgnl4);
+                listBox9.Items.Add("控制输入信号" + "  " + spdi.di1.sgnl1);
+
+            }
+            else
+            {
+                MessageBox.Show(ret2 + "");
+            }
+        }
+
+        public void alarm()//监控下的报警
+        {
+
+            StringBuilder m = new StringBuilder("123");
+            MessageBox.Show(m.ToString());
+            short ret = Fanuc.cnc_rdspdlalm(Fanuc.h, m);
+            if (ret == 0)
+            {
+                MessageBox.Show(m.ToString());
+            }
+            else
+            {
+                MessageBox.Show(ret + "");
+            }
+        }
+        private void button5_Click(object sender, EventArgs e)
+        {
+            get_loop_gain();
+           // get_spindle_amount();
+            get_ad_speed();
+            get_moshi();
+            get_current();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            monitor_info();
+            
+        }
+    }
+}
